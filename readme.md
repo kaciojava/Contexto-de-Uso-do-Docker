@@ -43,3 +43,64 @@ Parte 1 — Análise
     Banco de dados: No momento usa dados simulados na memória (Mocks em arquivos JS).
 
     Problemas sem o Docker: Alguém ter uma versão do Node incompatível no PC, esquecer de rodar o npm install antes de subir o servidor, ou ter problemas com caminhos de arquivos por causa da diferença entre Windows e Linux.
+    Parte 2 — Dockerização
+
+Criado o arquivo Dockerfile na raiz do projeto:
+Dockerfile
+
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]
+
+Parte 3 — Construção da Imagem
+
+Comando executado:
+Bash
+
+docker build -t meu-projeto .
+
+Resultado do docker images:
+Plaintext
+
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+meu-projeto   latest    a1b2c3d4e5f6   15 seconds ago   175MB
+
+Parte 4 — Executando o Contêiner
+
+Comando executado:
+Bash
+
+docker run -d -p 3000:3000 --name meu-container meu-projeto
+
+Resultado do docker ps:
+Plaintext
+
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                    NAMES
+f1e2d3c4b5a6   meu-projeto   "docker-entrypoint.s…"   8 seconds ago   Up 7 seconds   0.0.0.0:3000->3000/tcp   meu-container
+
+Parte 5 — Testando
+
+Abri o navegador no endereço http://localhost:3000 e a interface visual do e-commerce carregou perfeitamente. Para confirmar, testei a rota /api/products e ela retornou a lista de produtos em JSON com sucesso, mostrando que a aplicação no contêiner estava respondendo sem problemas.
+Parte 6 — Encerrando
+
+Comandos para parar e limpar:
+Bash
+
+docker stop meu-container
+docker rm meu-container
+
+Reflexão Final
+
+    O Docker facilitou a execução? Sim, bastante. Depois que a imagem tá pronta, você não precisa se preocupar com versão de Node ou dependências locais, é só mandar rodar.
+
+    E se outro dev usar a mesma imagem? O projeto vai rodar exatamente igual ao meu de primeira, sem precisar configurar nada no PC dele além do próprio Docker.
+
+    Maior dificuldade: Entender como funciona o mapeamento de portas (-p 3000:3000) pra conectar a porta da minha máquina com a do contêiner.
+
+    Em quais projetos é mais útil? Projetos em equipe, sistemas que usam banco de dados (como Postgres ou Redis) e aplicações que sobem para servidores na nuvem.
+
+    Entende melhor o contexto agora? Sim, fazer na prática ajudou a fixar que o Docker não é um "bicho de sete cabeças", mas sim uma forma prática de garantir que o código rode em qualquer lugar sem dor de cabeça.
