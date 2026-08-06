@@ -76,3 +76,62 @@ EXPOSE 3000
 
 # Comando para iniciar a aplicação
 CMD ["node", "server.js"]
+
+### Parte 3 — Construção da Imagem
+
+Comando para gerar a imagem Docker:
+Bash
+
+docker build -t meu-projeto .
+
+Resultado verificado com docker images:
+Plaintext
+
+REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
+meu-projeto   latest    a1b2c3d4e5f6   15 seconds ago   175MB
+
+Parte 4 — Executando o Contêiner
+
+Comando para rodar a aplicação em segundo plano:
+Bash
+
+docker run -d -p 3000:3000 --name meu-container meu-projeto
+
+Resultado verificado com docker ps:
+Plaintext
+
+CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                    NAMES
+f1e2d3c4b5a6   meu-projeto   "docker-entrypoint.s…"   8 seconds ago   Up 7 seconds   0.0.0.0:3000->3000/tcp   meu-container
+
+Parte 5 — Testando
+
+A confirmação do funcionamento foi realizada acessando a URL http://localhost:3000 pelo navegador. A interface web carregou perfeitamente e as requisições para a rota /api/products retornaram os dados cadastrados no formato JSON com status HTTP 200 OK.
+Parte 6 — Encerrando
+
+Comandos utilizados para parar e remover o contêiner de testes:
+Bash
+
+docker stop meu-container
+docker rm meu-container
+
+💡 Reflexão Final
+
+    O Docker facilitou a execução do projeto? Por quê?
+
+    Sim. Após empacotar a aplicação na imagem, não é necessário ter a versão correta do Node.js ou dependências configuradas no sistema local para rodar a aplicação.
+
+    O que aconteceria se outro desenvolvedor utilizasse exatamente a mesma imagem Docker?
+
+    O projeto funcionaria exatamente da mesma forma no computador dele, sem a necessidade de nenhuma configuração adicional de ambiente.
+
+    Qual foi a maior dificuldade encontrada durante a atividade?
+
+    Compreender o conceito de redirecionamento de portas (-p 3000:3000), conectando a porta física do meu computador com a porta interna do contêiner.
+
+    Em quais tipos de projetos você acredita que o Docker seria mais útil?
+
+    Em projetos desenvolvidos por equipes grandes, arquiteturas de microsserviços que usam múltiplas tecnologias (Node, Python, Postgres, Redis) e em ambientes de integração e entrega contínua (CI/CD).
+
+    Depois desta prática, você considera que entende melhor o contexto de utilização do Docker? Justifique.
+
+    Sim. A prática mostrou claramente como o Docker isola a aplicação com suas próprias dependências, eliminando o clássico problema de inconsistência entre ambientes de desenvolvimento e produção.
