@@ -1,106 +1,78 @@
-Exercício 1 — Teórico
+# 🐳 Exercício: Contexto de Uso do Docker
 
-1. Principal problema enfrentado pela equipe:
-É o famoso "cada um usa uma versão". O ambiente de desenvolvimento está totalmente desalinhado. Como cada dev roda versões diferentes do Node e do banco de dados, o código que funciona no PC de um acaba quebrando na máquina do outro e no servidor.
+> **Repositório Analisado:** [API-de-E-commerce-Clone-Amazon-Interface-Grafica](https://github.com/kaciojava/API-de-E-commerce-Clone-Amazon-Interface-Grafica)
 
-2. Por que instalar dependências direto no SO gera problemas?
-Porque vira uma bagunça na máquina local. Se amanhã você precisar trabalhar em outro projeto que pede uma versão antiga do Node ou do PostgreSQL, vai dar conflito no seu computador. Além disso, dependências instaladas no Windows nem sempre se comportam do mesmo jeito no Linux ou macOS.
+---
 
-3. Como o Docker resolve isso?
-O Docker empacota a aplicação e todas as ferramentas que ela precisa dentro de uma "caixinha" isolada (o contêiner). Como esse pacote é exatamente o mesmo pra todo mundo, o projeto roda idêntico no meu PC, no do colega de equipe e no servidor.
+## 📚 Exercício 1 — Teórico
 
-4. Diferença entre Máquina Virtual e Contêiner Docker:
+**1. Qual é o principal problema enfrentado pela equipe?**  
+É o famoso *"cada um usa uma versão"*. O ambiente de desenvolvimento está totalmente desalinhado. Como cada dev roda versões diferentes do Node.js e do banco de dados, o código que funciona no PC de um acaba quebrando na máquina do outro e no servidor de produção.
 
-    Máquina Virtual: É pesada porque simula um computador inteiro do zero, instalando um sistema operacional completo por cima do seu.
+**2. Por que instalar todas as dependências diretamente no sistema operacional de cada desenvolvedor pode gerar dificuldades?**  
+Porque gera conflitos na máquina local. Se amanhã for preciso trabalhar em outro projeto que pede uma versão antiga do Node.js ou do PostgreSQL, haverá incompatibilidade no computador. Além disso, dependências instaladas no Windows nem sempre se comportam do mesmo jeito no Linux ou no macOS.
 
-    Contêiner Docker: É leve porque ele não instala outro sistema operacional; ele pega "emprestado" o Kernel da sua própria máquina e isola apenas os arquivos e processos que a aplicação precisa pra rodar.
+**3. Como o Docker resolve esse problema?**  
+O Docker empacota a aplicação e todas as suas dependências dentro de uma "caixa" isolada (o contêiner). Como essa imagem é exatamente a mesma para todo mundo, o projeto roda idêntico na minha máquina, na do colega de equipe e no servidor.
 
-5. O que significa o contêiner ser isolado?
-Significa que tudo o que acontece dentro dele fica preso lá dentro. Ele tem sua própria rede, seus próprios arquivos e seus próprios processos sem mexer ou interferir no sistema do seu computador (e vice-versa).
+**4. Explique a diferença entre uma máquina virtual e um contêiner Docker:**  
+* **Máquina Virtual (VM):** É mais pesada porque simula um computador completo do zero, instalando um sistema operacional convidado inteiro por cima do sistema hospedeiro.
+* **Contêiner Docker:** É leve porque não instala outro sistema operacional. Ele compartilha o próprio Kernel do computador hospedeiro e isola apenas os arquivos e processos necessários para a aplicação rodar.
 
-6. Função dos cgroups:
-É o recurso do Linux que controla o uso do hardware. Ele limita o "suco" da máquina: define quanta memória RAM, CPU e disco o contêiner pode gastar pra ele não consumir tudo e travar o seu PC.
+**5. O que significa dizer que um contêiner é isolado?**  
+Significa que tudo o que roda dentro dele fica restrito àquele ambiente. Ele possui seu próprio sistema de arquivos, sua rede e seus processos sem interferir ou ser afetado pelo sistema operacional da máquina física (ou por outros contêineres).
 
-7. Função dos namespaces:
-É o que cria a ilusão de isolamento. O namespace esconde os outros processos do computador, fazendo o contêiner achar que está rodando completamente sozinho na máquina.
+**6. Qual a função dos cgroups?**  
+É o recurso do Kernel do Linux responsável por controlar e limitar o uso do hardware. Ele define quanta memória RAM, processamento (CPU) e disco cada contêiner pode gastar, evitando que um contêiner consuma todos os recursos da máquina.
 
-8. O que é reprodutibilidade e por que importa?
-É a capacidade de recriar exatamente o mesmo ambiente de execução a qualquer momento e em qualquer lugar. Isso é essencial pra acabar com aqueles bugs misteriosos que só acontecem em produção e pra ajudar um dev novo a começar a mexer no projeto sem perder um dia inteiro configurando a máquina.
-Desafio Extra
+**7. Qual a função dos namespaces?**  
+É o recurso do Kernel do Linux que cria a camada de visibilidade isolada. Ele "esconde" os recursos do sistema operacional hospedeiro, fazendo o contêiner enxergar apenas seus próprios processos, redes e arquivos como se estivesse rodando sozinho.
 
-A frase “Na minha máquina funciona” é um problema gigante porque o cliente e os usuários não vão usar o sistema dentro da máquina do desenvolvedor. Se o código quebra no servidor de produção ou na máquina do colega, pra todos os efeitos o sistema está quebrado, gerando atrasos, retrabalho e prejuízo.
-Exercício 2 — Prática
+**8. O que é reprodutibilidade e por que ela é importante?**  
+É a capacidade de recriar exatamente o mesmo ambiente de execução a qualquer momento e em qualquer lugar. Isso é essencial para eliminar erros ocultos ao subir código para produção e para permitir que novos desenvolvedores comecem a trabalhar no projeto sem perder tempo configurando o ambiente.
 
-Link do repositório analisado: [https://github.com/kaciojava/API-de-E-commerce-Clone-Amazon-Interface-Grafica](https://github.com/kaciojava/API-de-E-commerce-Clone-Amazon-Interface-Grafica)
-Parte 1 — Análise
+---
 
-    Linguagem: JavaScript (Node.js).
+### 🔥 Desafio Extra
 
-    Dependências principais: express, express-session, cookie-parser, express-validator.
+**Explique por que a frase “Na minha máquina funciona” é considerada um problema em projetos profissionais:**  
+Essa frase é um problema grave porque o cliente e os usuários finais não vão acessar o sistema a partir do computador do desenvolvedor. Se a aplicação falha no servidor de produção ou no ambiente de outro integrante do time, para todos os efeitos o sistema está quebrado, gerando atrasos, retrabalho e prejuízo.
 
-    Porta: 3000.
+---
 
-    Banco de dados: No momento usa dados simulados na memória (Mocks em arquivos JS).
+## 🛠️ Exercício 2 — Prática
 
-    Problemas sem o Docker: Alguém ter uma versão do Node incompatível no PC, esquecer de rodar o npm install antes de subir o servidor, ou ter problemas com caminhos de arquivos por causa da diferença entre Windows e Linux.
-    Parte 2 — Dockerização
+### Parte 1 — Análise
+* **Linguagem:** JavaScript (Node.js)
+* **Dependências Principais:** `express`, `express-session`, `cookie-parser`, `express-validator`
+* **Porta:** `3000`
+* **Banco de Dados:** Armazenamento em memória (Arrays e Mocks em arquivos JS)
+* **Possíveis Problemas sem o Docker:** Versões incompatíveis do Node.js, esquecer de rodar `npm install` antes de iniciar ou inconsistências de caminhos de arquivos em sistemas operacionais diferentes (Windows vs. Linux).
 
-Criado o arquivo Dockerfile na raiz do projeto:
-Dockerfile
+---
 
+### Parte 2 — Dockerização (`Dockerfile`)
+
+Arquivo `Dockerfile` criado na raiz do projeto:
+
+```dockerfile
+# Imagem base oficial do Node.js
 FROM node:18-alpine
+
+# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
+
+# Copia os arquivos de dependências
 COPY package*.json ./
+
+# Instala as dependências
 RUN npm install
+
+# Copia todo o restante dos arquivos
 COPY . .
+
+# Expõe a porta que a aplicação utiliza
 EXPOSE 3000
+
+# Comando para iniciar a aplicação
 CMD ["node", "server.js"]
-
-Parte 3 — Construção da Imagem
-
-Comando executado:
-Bash
-
-docker build -t meu-projeto .
-
-Resultado do docker images:
-Plaintext
-
-REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
-meu-projeto   latest    a1b2c3d4e5f6   15 seconds ago   175MB
-
-Parte 4 — Executando o Contêiner
-
-Comando executado:
-Bash
-
-docker run -d -p 3000:3000 --name meu-container meu-projeto
-
-Resultado do docker ps:
-Plaintext
-
-CONTAINER ID   IMAGE         COMMAND                  CREATED         STATUS         PORTS                    NAMES
-f1e2d3c4b5a6   meu-projeto   "docker-entrypoint.s…"   8 seconds ago   Up 7 seconds   0.0.0.0:3000->3000/tcp   meu-container
-
-Parte 5 — Testando
-
-Abri o navegador no endereço http://localhost:3000 e a interface visual do e-commerce carregou perfeitamente. Para confirmar, testei a rota /api/products e ela retornou a lista de produtos em JSON com sucesso, mostrando que a aplicação no contêiner estava respondendo sem problemas.
-Parte 6 — Encerrando
-
-Comandos para parar e limpar:
-Bash
-
-docker stop meu-container
-docker rm meu-container
-
-Reflexão Final
-
-    O Docker facilitou a execução? Sim, bastante. Depois que a imagem tá pronta, você não precisa se preocupar com versão de Node ou dependências locais, é só mandar rodar.
-
-    E se outro dev usar a mesma imagem? O projeto vai rodar exatamente igual ao meu de primeira, sem precisar configurar nada no PC dele além do próprio Docker.
-
-    Maior dificuldade: Entender como funciona o mapeamento de portas (-p 3000:3000) pra conectar a porta da minha máquina com a do contêiner.
-
-    Em quais projetos é mais útil? Projetos em equipe, sistemas que usam banco de dados (como Postgres ou Redis) e aplicações que sobem para servidores na nuvem.
-
-    Entende melhor o contexto agora? Sim, fazer na prática ajudou a fixar que o Docker não é um "bicho de sete cabeças", mas sim uma forma prática de garantir que o código rode em qualquer lugar sem dor de cabeça.
